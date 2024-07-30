@@ -1,0 +1,12 @@
+.marker-r {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.marker-r--label-color {
+    color: #0000EE;
+}
+
+.marker-r--label-bh {
+    cursor: pointer;
+}

@@ -1,0 +1,6 @@
+.text-block {
+    text-align: start;
+    &:hover {
+        background-color: beige;
+    }
+}

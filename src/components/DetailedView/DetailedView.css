@@ -1,0 +1,25 @@
+.detailed-view {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: 200px 1fr;
+    row-gap: 20px;
+}
+
+.detailed-view__header {
+    width: 100%;
+    height: 100%;
+    place-content: center;
+}
+
+.detailed-view__books {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 50px auto;
+    row-gap: 10px;
+}
+
+.detailed-view__books__header {
+    width: 100%;
+    padding: 5px;
+    font-size: small;
+}

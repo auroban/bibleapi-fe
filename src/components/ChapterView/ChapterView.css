@@ -1,0 +1,25 @@
+.chapter-view {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 150px 100px auto;
+    row-gap: 10px;
+}
+
+.chapter-view--head {
+    padding: 20px;
+    place-content: center;
+}
+
+.chapter-view--dd {
+    display: grid;
+    grid-template-rows: auto;
+    place-content: center;
+}
+
+.chapter-view--vl {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}

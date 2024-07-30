@@ -1,0 +1,67 @@
+.usfm-view {
+    padding: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.usfm-view__space {
+    width: 3px;
+}
+
+.uv__header {
+    font-size: 1.5rem;
+    font-weight: bolder;
+    color: #800020;
+}
+
+.uv__cf {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0000EE;
+    cursor: pointer;
+}
+
+.uv__dt--outer {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    place-content: center;
+    padding: 30px 0;
+}
+
+.uv__dt--inner {
+    font-size: 1.2rem;
+    font-style: italic;
+
+}
+.uv__v--n {
+    font-size: .85rem;
+    font-weight: 500;
+    margin-right: 2px;
+    color: #0000EE;
+    font-weight: 500;
+}
+
+.uv__v--t {
+
+}
+
+.uv__v--f {
+    margin-left: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.uv__v--f {
+    margin-left: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.uv__outer--pmo {
+    
+}

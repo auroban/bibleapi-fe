@@ -1,0 +1,16 @@
+.verse-block {
+    display: grid;
+    grid-template-columns: 30px auto;
+    align-items: center;
+    column-gap: 15px;
+}
+
+.verse-block__id {
+    font-size: 1.5rem;
+}
+
+.verse-block__content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
