@@ -4,7 +4,7 @@ import "./USFMView.css";
 import { Marker } from "../../constants/Marker";
 import Paragraph from "../MarkerViews/Paragraph/Paragraph";
 import Heading from "../MarkerViews/Heading/Heading";
-import { CrossRefAction } from "../../models/actions";
+import { CrossRefAction, TextSegmentAction } from "../../models/actions";
 import CrossRef from "../MarkerViews/CrossReference/CrossRef";
 import DescriptiveTitle from "../MarkerViews/DescriptiveTitle/DescriptiveTitle";
 import { TextUtils } from "../../utils/TextUtils";
@@ -39,6 +39,10 @@ const USFMView = (props: Props) => {
 
     const openRefWindow = (crossRefView: CrossRefView) => {
         console.info(`Received CF View: ${JSON.stringify(crossRefView)}`);
+    }
+
+    const onTextSegmentClick = (lexInfo: CustomMap<string>) => {
+
     }
 
     const constructView = (contents: Array<VerseSegment>, parentMarker: string) : ReactElement => {
@@ -84,9 +88,24 @@ const USFMView = (props: Props) => {
         const textChunk = TextUtils.parseTextSegment(wholeVerse, Number.parseInt(verseStartIndex), Number.parseInt(verseEndIndex));
         const includeVerseNum = Number.parseInt(verseStartIndex) === 0;
 
-        let vs = {
+        // Get TextSegments relative to the verse segment
+        const textSegments = MarkerUtil.getTextSegmentsRelativeToVerseChunk(
+            verseNum, 
+            props.chapter.verses!!,
+            Number.parseInt(verseStartIndex),
+            Number.parseInt(verseEndIndex));
+        const textSegmentActions: Array<TextSegmentAction> = textSegments.map((it) => {
+            const action: TextSegmentAction = {
+                textSegmentView : it,
+                onClick: () => onTextSegmentClick(it.lexicographyInfo!!)
+            };
+            return action;
+        });
+
+        let vs: VerseSegment = {
             verseNum : includeVerseNum ? verseNum : null,
             text : textChunk,
+            textSegmentActions : textSegmentActions
         }
         console.debug(`Constructed Verse Segment: ${JSON.stringify(vs)}`);
         return vs;
@@ -111,7 +130,6 @@ const USFMView = (props: Props) => {
                     }
                     const heading = <Heading text={ content } />
                     finalContentList.push(heading);
-                    console.debug(`Contents: ${JSON.stringify(contents)}`);
                     break;
                 }
                 case Marker.CROSS_REF: {
@@ -134,7 +152,6 @@ const USFMView = (props: Props) => {
                     });
                     const cr = <CrossRef actions={ crossRefActions } />
                     finalContentList.push(cr);
-                    console.debug(`Contents: ${JSON.stringify(contents)}`);
                     break;
                 }
                 case Marker.DESCRIPTIVE_TITLE: {
@@ -145,7 +162,6 @@ const USFMView = (props: Props) => {
                     }
                     const dt = <DescriptiveTitle text={ content } />
                     finalContentList.push(dt);
-                    console.debug(`Contents: ${JSON.stringify(contents)}`);
                     break;
                 }
                 case Marker.BREAK: {
@@ -155,7 +171,6 @@ const USFMView = (props: Props) => {
                         contents = [];
                     }
                     finalContentList.push(<LineBreak />);
-                    console.debug(`Contents: ${JSON.stringify(contents)}`);
                     break;
                 }
                 case Marker.PARAGRAPH: {
@@ -165,25 +180,22 @@ const USFMView = (props: Props) => {
                         contents = [];
                     }
                     parentMarker = markerView.syntax;
-                    if (!TextUtils.isNullOrEmtpty(verseNum)) {
+                    if (!TextUtils.isNullOrBlank(verseNum)) {
                         contents.push(getVerseSegment(markerData));
                     }
-                    console.debug(`Contents: ${JSON.stringify(contents)}`);
                     break;
                 }
                 case Marker.CONTINUATION_PARAGRAPGH: {
                     parentMarker = Marker.PARAGRAPH;
-                    if (!TextUtils.isNullOrEmtpty(verseNum)) {
+                    if (!TextUtils.isNullOrBlank(verseNum)) {
                         contents.push(getVerseSegment(markerData));
                     }
-                    console.debug(`Contents: ${JSON.stringify(contents)}`);
                     break;
                 }
                 case Marker.VERSE: {
-                    if (!TextUtils.isNullOrEmtpty(verseNum)) {
+                    if (!TextUtils.isNullOrBlank(verseNum)) {
                         contents.push(getVerseSegment(markerData));
                     }
-                    console.debug(`Contents: ${JSON.stringify(contents)}`);
                     break;
                 }
                 case Marker.EMBEDDED_TEXT_OPENING: {
@@ -193,10 +205,9 @@ const USFMView = (props: Props) => {
                         contents = [];
                     }
                     parentMarker = Marker.EMBEDDED_TEXT_OPENING;
-                    if (!TextUtils.isNullOrEmtpty(verseNum)) {
+                    if (!TextUtils.isNullOrBlank(verseNum)) {
                         contents.push(getVerseSegment(markerData));
                     }
-                    console.debug(`Contents: ${JSON.stringify(contents)}`);
                     break;
                 }
                 case Marker.QUOTE:
@@ -207,7 +218,7 @@ const USFMView = (props: Props) => {
                         contents = [];
                     }
                     parentMarker = markerView.syntax;
-                    if (!TextUtils.isNullOrEmtpty(verseNum)) {
+                    if (!TextUtils.isNullOrBlank(verseNum)) {
                         const vs = getVerseSegment(markerData);
                         finalContentList.push(constructView([vs], parentMarker));
                     }
@@ -221,7 +232,7 @@ const USFMView = (props: Props) => {
                         contents = [];
                     }
                     parentMarker = markerView.syntax;
-                    if (!TextUtils.isNullOrEmtpty(verseNum)) {
+                    if (!TextUtils.isNullOrBlank(verseNum)) {
                         const vs = getVerseSegment(markerData);
                         finalContentList.push(constructView([vs], parentMarker));
                     }
@@ -237,7 +248,7 @@ const USFMView = (props: Props) => {
                         contents = [];
                     }
                     parentMarker = markerView.syntax
-                    if (!TextUtils.isNullOrEmtpty(verseNum)) {
+                    if (!TextUtils.isNullOrBlank(verseNum)) {
                         const vs = getVerseSegment(markerData);
                         const view = constructView([vs], parentMarker);
                         finalContentList.push(view)
@@ -251,7 +262,7 @@ const USFMView = (props: Props) => {
                         contents = [];
                     }
                     parentMarker = markerView.syntax;
-                    if (!TextUtils.isNullOrEmtpty(verseNum)) {
+                    if (!TextUtils.isNullOrBlank(verseNum)) {
                         const vs = getVerseSegment(markerData);
                         const view = constructView([vs], parentMarker);
                         finalContentList.push(view)
@@ -259,7 +270,6 @@ const USFMView = (props: Props) => {
                     break;
                 }
                 case Marker.HEBREW_NOTE: {
-                    console.debug(`Coming here: ${markerView.syntax}`);
                     if (contents.length > 0) {
                         const view = constructView(contents, parentMarker);
                         finalContentList.push(view);
@@ -290,10 +300,6 @@ const USFMView = (props: Props) => {
             contents = [];
         } 
     }
-
-
-    
-
 
     return (
         <div className="container-fluid usfm-view">

@@ -1,3 +1,5 @@
+import { TextSegmentAction } from "./actions"
+
 export interface CustomMap<T> {
     [key: string] : T
 }
@@ -82,6 +84,8 @@ export interface TextSegmentView {
 }
 
 export interface VerseSegment {
-    verseNum: string | null,
+    verseNum: string | null
     text: string
+    textSegmentActions: Array<TextSegmentAction>
+    footnotes?: Array<FootnoteView>
 }

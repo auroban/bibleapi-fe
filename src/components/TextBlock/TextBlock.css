@@ -1,6 +1,10 @@
 .text-block {
     text-align: start;
+}
+
+.text-block--highlight {
     &:hover {
-        background-color: beige;
+        cursor: pointer;
+        background-color: #abff32;
     }
 }
