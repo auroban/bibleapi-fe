@@ -1,8 +1,6 @@
 import { ReactElement } from "react";
 import { VerseSegment } from "../../../models/dto";
 import "./Paragraph.css";
-import TextBlock from "../../TextBlock/TextBlock";
-import { TextUtils } from "../../../utils/TextUtils";
 import { MarkerUtil } from "../../../utils/MarkerUtils";
 
 interface Props {
@@ -28,7 +26,7 @@ const Paragraph = (props: Props) => {
             const c = <label className="mc-vr-n">{ vs.verseNum }</label>;
             content.push(c);
         }
-        const c = vs.textSegmentActions ? buildWithTextBlocks(vs) : buildWithoutTextBlocks(vs) ;
+        const c = vs.textSegmentActions && vs.textSegmentActions.length > 0 ? buildWithoutTextBlocks(vs) : buildWithoutTextBlocks(vs) ;
         content.push(c);
     });
 

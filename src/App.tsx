@@ -8,6 +8,7 @@ import DetailedView from './components/DetailedView/DetailedView';
 import NoView from './components/NoView/NoView';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ChapterView from './components/ChapterView/ChapterView';
+import VerseView from './components/VerseView/VerseView';
 
 interface State {
   translationOverviews: Array<TranslationOverview>
@@ -69,6 +70,7 @@ function App() {
         <Routes>
           <Route path={ '/' } element={ homeDiv } />
           <Route path={ '/:tCode/:bCode/chapter' } element={ <ChapterView /> } />
+          <Route path={ '/:tCode/:bCode/verse' } element={ <VerseView /> } />
         </Routes>
       </div>
     </BrowserRouter>

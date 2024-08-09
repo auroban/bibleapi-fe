@@ -22,15 +22,17 @@ const EmbeddedTextOpening = (props: Props) => {
     }
     
     props.verseSegments.forEach((vs, index) => {
+        console.debug(`Current Verse Segment: ${JSON.stringify(vs)}`);
         if (vs.verseNum) {
             content.push(<label className="mc-vr-n">{ vs.verseNum }</label>);
         }
+        content.push(buildWithoutTextBlocks(vs));
 
-        if (vs.textSegmentActions.length > 0) {
-            content.push(buildWithTextBlocks(vs));
-        } else {
-            content.push(buildWithoutTextBlocks(vs));
-        }
+        // if (vs.textSegmentActions.length > 0) {
+        //     content.push(buildWithTextBlocks(vs));
+        // } else {
+        //     content.push(buildWithoutTextBlocks(vs));
+        // }
         if (index < props.verseSegments.length - 1) {
             content.push(<span className="mc-space" />);
         }

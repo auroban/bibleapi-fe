@@ -8,17 +8,13 @@ import { ChapterDetailedViewRequest } from "../../models/request"
 import USFMView from "../USFMView/USFMView"
 import PlainView from "../PlainView/PlainView"
 
-interface Props {
-    
-}
-
 interface State {
     allChapters: Array<ChapterDetailedView>
-    currentChapter?: ChapterDetailedView
+    currentChapter?: ChapterDetailedView | null
     bookOverview: BookOverview | null
 }
 
-const ChapterView = (props: Props) => {
+const ChapterView = () => {
 
     const { tCode } = useParams();
     const { bCode } = useParams();
@@ -91,9 +87,8 @@ const ChapterView = (props: Props) => {
     let content: ReactElement = <></>
 
     if (state.currentChapter) {
-        if (state.currentChapter.usfm) {
+        if (state.currentChapter.usfm && Object.keys(state.currentChapter.usfm).length !== 0) {
             content = <USFMView chapter={ state.currentChapter } />
-            // content = <PlainView chapter={ state.currentChapter } />
         } else {
             content = <PlainView chapter={ state.currentChapter } />
         }

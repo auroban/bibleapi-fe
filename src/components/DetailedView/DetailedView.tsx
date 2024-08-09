@@ -12,6 +12,10 @@ const DetailedView = (props: Props) => {
         window.open(`/${tCode}/${book.code ?? ""}/chapter`, "_blank", "noreferrer");
     }
 
+    const onReadByVerse = (tCode: string, book: BookOverview) => {
+        window.open(`/${tCode}/${book.code ?? ""}/verse`, "_blank", "noreferrer");
+    }
+
     const bookList = props.selectedTranslation.books?.map((val, index) => {
 
         const headingId = `heading-${index}`;
@@ -35,7 +39,12 @@ const DetailedView = (props: Props) => {
                                 onClick={() => onReadByChapter(props.selectedTranslation.code ?? "", val)}>
                                     Read By Chapter
                             </button>
-                            <button type="button" className="btn btn-outline-primary">Read By Verse</button>
+                            <button 
+                                type="button" 
+                                className="btn btn-outline-primary"
+                                onClick={() => onReadByVerse(props.selectedTranslation.code ?? "", val)}>
+                                    Read By Verse
+                            </button>
                         </div>
                     </div>
                 </div>

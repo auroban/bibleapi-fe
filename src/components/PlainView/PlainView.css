@@ -1,3 +1,9 @@
 .plain-view {
-    
+    padding: 20px;
+    grid-auto-flow: column;
+}
+
+.plain-view--vr {
+    display: flex;
+    flex-direction: row;
 }
