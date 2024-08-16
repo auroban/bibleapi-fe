@@ -1,6 +1,8 @@
+import { ReactElement } from "react";
 import { Marker } from "../../../constants/Marker";
 import { CustomMap, VerseSegment } from "../../../models/dto";
 import "./ListEntry.css";
+import { MarkerUtil } from "../../../utils/MarkerUtils";
 
 interface Props {
     syntax: string
@@ -16,10 +18,23 @@ const ListEntry = (props: Props) => {
     cssMap[Marker.LIST_ENTRY_3] = "marker-li--2";
 
     const cssClass = cssMap[props.syntax] ?? cssMap[Marker.LIST_ENTRY];
+
+    const buildWithTextBlocks = (vs: VerseSegment) : ReactElement => {
+
+        const blocks = MarkerUtil.constructTextBlocks(vs);
+        return <span className="mc-vr-t">{ blocks }</span>;
+    }
+
+    const buildWithoutTextBlocks = (vs: VerseSegment) : ReactElement => {
+        return <span className="mc-vr-t">{ vs.text }</span>;
+    }
+
+    const content = props.verseSegment.textSegmentActions.length > 0 ? buildWithTextBlocks(props.verseSegment) : buildWithoutTextBlocks(props.verseSegment);
+    
     return (
         <div className={`container-fluid ${cssClass} mc-ta-l`}>
             { props.verseSegment.verseNum ? <label className="mc-vr-n">{ props.verseSegment.verseNum }</label> : null }       
-            <label className="mc-vr-t">{ props.verseSegment.text }</label>
+            { content }
         </div>
     );
 }

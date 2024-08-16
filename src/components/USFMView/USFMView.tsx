@@ -107,7 +107,6 @@ const USFMView = (props: Props) => {
             text : textChunk,
             textSegmentActions : textSegmentActions
         }
-        console.debug(`Constructed Verse Segment: ${JSON.stringify(vs)}`);
         return vs;
     }
 

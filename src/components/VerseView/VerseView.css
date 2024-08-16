@@ -34,4 +34,5 @@
     flex-direction: row;
     place-content: center;
     padding-top: 20px;
+    gap: 5px;
 }

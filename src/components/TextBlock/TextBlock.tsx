@@ -1,4 +1,3 @@
-import { ReactElement, useState } from "react";
 import "./TextBlock.css";
 
 interface Props {
@@ -11,7 +10,7 @@ const TextBlock = (props: Props) => {
 
     return (
         <span className={ props.highlight ? "text-block--highlight" : "text-block" } onClick={ () => props.onClick ? props.onClick() : null }>
-                { props.text }
+            <span>{ props.text }</span>
         </span>
     );
 }

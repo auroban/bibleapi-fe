@@ -25,15 +25,12 @@ const getTextSegmentsRelativeToVerseChunk = (
     }
     const textSegmentViews = vdv.textSegments;
     const ts: Array<TextSegmentView> = [];
-    console.debug(`Chunk-Start: ${chunkStart} <=> Chunk-End: ${chunkEnd}`);
     textSegmentViews.forEach((tsv) => {
         const tsStart = tsv.startIndex ?? -1;
         const tsEnd = tsv.endIndex ?? -1;
-        if (tsStart >= chunkStart && tsEnd <= chunkEnd) {
-            console.debug(`TS-Start: ${tsStart} <=> TS-End: ${tsEnd}`);
+        if (tsStart >= chunkStart && tsEnd <= chunkEnd && tsEnd !== -1) {
             const localStartIndex = tsStart - chunkStart;
             const localEndIndex = localStartIndex + (tsEnd - tsStart);
-            console.debug(`Local-Start: ${localStartIndex} <=> Local-End: ${localEndIndex}`);
             const localTSV: TextSegmentView = {
                 startIndex : localStartIndex,
                 endIndex : localEndIndex,
@@ -46,30 +43,27 @@ const getTextSegmentsRelativeToVerseChunk = (
 }
 
 const constructTextBlocks = (vs: VerseSegment) : Array<ReactElement> => {
+    console.debug(`Received Verse Segment: ${JSON.stringify(vs)}`);
     const tsvActions = vs.textSegmentActions ?? [];
     const blocks: Array<ReactElement> = [];
     let nextIndex = -1;
     tsvActions.forEach((it) => {
         console.debug(`Current Index: ${nextIndex}`);
         if (nextIndex < 0) {
-            console.debug("IF Condition");
             const verseChunk = vs.text.substring(it.textSegmentView.startIndex!!, it.textSegmentView.endIndex!! + 1);
-            console.debug(`Verse Chunk: ${verseChunk}`);
             const textBlock = createElement(TextBlock, { "text" : verseChunk, "onClick" : it.onClick, "highlight" : true });
             blocks.push(textBlock);
-        } else {
-            console.debug("ELSE Condition");
-            console.debug(`TS-Start-Index: ${it.textSegmentView.startIndex}`);
+        } else if ((it.textSegmentView.endIndex ?? -1) !== -1) {
             const verseChunk1 = vs.text.substring(nextIndex, it.textSegmentView.startIndex!!);
             const verseChunk2 = vs.text.substring(it.textSegmentView.startIndex!!, it.textSegmentView.endIndex!! + 1);
-            console.debug(`Verse Chunk 1: ${verseChunk1}`);
-            console.debug(`Verse Chunk 2: ${verseChunk2}`);
             const textBlock1 = createElement(TextBlock, { "text" : verseChunk1 });
             const textBlock2 = createElement(TextBlock, { "text" : verseChunk2, "onClick" : it.onClick, "highlight" : true });
             blocks.push(textBlock1);
             blocks.push(textBlock2);
         }
-        nextIndex = it.textSegmentView.endIndex!! + 1;
+        if ((it.textSegmentView.endIndex ?? -1) !== -1) {
+            nextIndex = it.textSegmentView.endIndex!! + 1;
+        }
     });
 
     if (nextIndex !== -1 && nextIndex < vs.text.length - 1) {

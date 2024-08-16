@@ -21,12 +21,17 @@ const Paragraph = (props: Props) => {
         return <span className="mc-vr-t">{ vs.text }</span>;
     }
 
+    let currentVerseNum = -1;
     props.verseSegments.forEach((vs) => {
+        if(currentVerseNum !== -1) {
+            content.push(<span className="mc-space" />);
+        }
         if (vs.verseNum) {
             const c = <label className="mc-vr-n">{ vs.verseNum }</label>;
             content.push(c);
+            currentVerseNum = Number.parseInt(vs.verseNum);
         }
-        const c = vs.textSegmentActions && vs.textSegmentActions.length > 0 ? buildWithoutTextBlocks(vs) : buildWithoutTextBlocks(vs) ;
+        const c = vs.textSegmentActions.length > 0 ? buildWithTextBlocks(vs) : buildWithoutTextBlocks(vs);
         content.push(c);
     });
 

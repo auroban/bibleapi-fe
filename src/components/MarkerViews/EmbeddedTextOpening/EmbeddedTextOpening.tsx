@@ -28,11 +28,11 @@ const EmbeddedTextOpening = (props: Props) => {
         }
         content.push(buildWithoutTextBlocks(vs));
 
-        // if (vs.textSegmentActions.length > 0) {
-        //     content.push(buildWithTextBlocks(vs));
-        // } else {
-        //     content.push(buildWithoutTextBlocks(vs));
-        // }
+        if (vs.textSegmentActions.length > 0) {
+            content.push(buildWithTextBlocks(vs));
+        } else {
+            content.push(buildWithoutTextBlocks(vs));
+        }
         if (index < props.verseSegments.length - 1) {
             content.push(<span className="mc-space" />);
         }

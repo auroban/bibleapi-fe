@@ -1,10 +1,12 @@
 import { useParams } from "react-router-dom";
 import "./VerseView.css";
-import { BookOverview, ChapterDetailedView, VerseDetailedView } from "../../models/dto";
+import { BookOverview, ChapterDetailedView, TextSegmentView, VerseDetailedView, VerseSegment } from "../../models/dto";
 import { ReactElement, useEffect, useState } from "react";
 import BibleApi from "../../helpers/BibleApi";
 import { ChapterDetailedViewRequest } from "../../models/request";
 import Dropdown from "../Dropdown/Dropdown";
+import { MarkerUtil } from "../../utils/MarkerUtils";
+import { TextSegmentAction } from "../../models/actions";
 
 interface State {
     allChapters: Array<ChapterDetailedView>
@@ -100,14 +102,47 @@ const VerseView = () => {
         }
     }
 
-    let content: ReactElement = <></>
+    const onTextSegmentViewClick = (tv: TextSegmentView) => {
+
+    }
+
+    const buildWithTextBlocks = (vs: VerseSegment) : ReactElement => {
+
+        const blocks = MarkerUtil.constructTextBlocks(vs);
+        return <span className="mc-vr-t">{ blocks }</span>;
+    }
+
+    const buildWithoutTextBlocks = (vs: VerseSegment) : ReactElement => {
+        return <span className="mc-vr-t">{ vs.text }</span>;
+    }
+
+
+    let content: ReactElement = <></>;
 
     if (state.currentVerse) {
-        console.debug(`Current Verse: ${JSON.stringify(state.currentVerse)}`);
+        let inner: ReactElement = <></>;
+
+        if (state.currentVerse.textSegments && state.currentVerse.textSegments.length > 0) {
+            const textSegmentActions: Array<TextSegmentAction> = state.currentVerse.textSegments.map((tv) => {
+                return {
+                    textSegmentView : tv,
+                    onClick : () => onTextSegmentViewClick(tv)
+                }
+            });
+            const verseSegment: VerseSegment = {
+                verseNum : `${state.currentVerse.num}`,
+                text : state.currentVerse.text ?? "",
+                textSegmentActions : textSegmentActions
+            }
+            inner = buildWithTextBlocks(verseSegment);
+        } else {
+            inner = <span className="mc-vr-t">{ state.currentVerse.text }</span>;
+        }
+
         content = (
             <div className="container-fluid verse-view--inner--vr">
                 <label className="mc-vr-n">{ state.currentVerse.num }</label>
-                <span className="mc-vr-t">{ state.currentVerse.text }</span>
+                { inner }
             </div>
         );
     }
