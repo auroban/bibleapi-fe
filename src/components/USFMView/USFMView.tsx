@@ -42,7 +42,7 @@ const USFMView = (props: Props) => {
     }
 
     const onTextSegmentClick = (lexInfo: CustomMap<string>) => {
-
+        
     }
 
     const constructView = (contents: Array<VerseSegment>, parentMarker: string) : ReactElement => {

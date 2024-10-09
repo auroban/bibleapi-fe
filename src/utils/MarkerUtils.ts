@@ -50,14 +50,23 @@ const constructTextBlocks = (vs: VerseSegment) : Array<ReactElement> => {
     tsvActions.forEach((it) => {
         console.debug(`Current Index: ${nextIndex}`);
         if (nextIndex < 0) {
-            const verseChunk = vs.text.substring(it.textSegmentView.startIndex!!, it.textSegmentView.endIndex!! + 1);
-            const textBlock = createElement(TextBlock, { "text" : verseChunk, "onClick" : it.onClick, "highlight" : true });
-            blocks.push(textBlock);
+            if (it.textSegmentView.startIndex !== 0) {
+                const verseChunk1 = vs.text.substring(nextIndex, it.textSegmentView.startIndex!!);    
+                const verseChunk2 = vs.text.substring(it.textSegmentView.startIndex!!, it.textSegmentView.endIndex!! + 1);
+                const textBlock1 = createElement(TextBlock, { "text" : verseChunk1 });
+                const textBlock2 = createElement(TextBlock, { "text" : verseChunk2, "onClick" : it.onClick, "highlight" : true, "lexiInfo" : it.textSegmentView.lexicographyInfo });
+                blocks.push(textBlock1);
+                blocks.push(textBlock2);
+            } else {
+                const verseChunk = vs.text.substring(it.textSegmentView.startIndex!!, it.textSegmentView.endIndex!! + 1);
+                const textBlock = createElement(TextBlock, { "text" : verseChunk, "onClick" : it.onClick, "highlight" : true });
+                blocks.push(textBlock);
+            }
         } else if ((it.textSegmentView.endIndex ?? -1) !== -1) {
             const verseChunk1 = vs.text.substring(nextIndex, it.textSegmentView.startIndex!!);
             const verseChunk2 = vs.text.substring(it.textSegmentView.startIndex!!, it.textSegmentView.endIndex!! + 1);
             const textBlock1 = createElement(TextBlock, { "text" : verseChunk1 });
-            const textBlock2 = createElement(TextBlock, { "text" : verseChunk2, "onClick" : it.onClick, "highlight" : true });
+            const textBlock2 = createElement(TextBlock, { "text" : verseChunk2, "onClick" : it.onClick, "highlight" : true, "lexiInfo" : it.textSegmentView.lexicographyInfo });
             blocks.push(textBlock1);
             blocks.push(textBlock2);
         }

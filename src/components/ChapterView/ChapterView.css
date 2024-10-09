@@ -1,7 +1,7 @@
 .chapter-view {
     height: 100%;
     display: grid;
-    grid-template-rows: 150px 100px auto;
+    grid-template-rows: 150px 100px 60px auto;
     row-gap: 10px;
 }
 
@@ -16,10 +16,40 @@
     place-content: center;
 }
 
+.chapter-view--audio {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
 .chapter-view--vl {
     display: flex;
     flex-direction: column;
     gap: 10px;
     align-items: center;
     justify-content: center;
+}
+
+audio::-webkit-media-controls-panel {
+    background-color: #1871c5;
+}
+
+audio::-webkit-media-controls-play-button {
+    background-color: #B1D4E0;
+    border-radius: 50%;
+}
+  
+audio::-webkit-media-controls-play-button:hover {
+    background-color: rgba(177,212,224, .7);
+}
+
+audio::-webkit-media-controls-time-remaining-display {
+    color: #fff;
+}
+
+audio::-webkit-media-controls-mute-button {
+    background-color: #B1D4E0;
+    border-radius: 50%;
 }

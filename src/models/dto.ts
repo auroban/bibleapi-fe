@@ -22,6 +22,7 @@ export interface TranslationOverview {
     lexInfoAvailable?: boolean
     usfmAvailable?: boolean
     books?: Array<BookOverview>
+    audioAvailable?: boolean
 }
 
 export interface ChapterOverview {
@@ -39,6 +40,12 @@ export interface ChapterDetailedView {
     verses?: CustomMap<VerseDetailedView> | null
     usfm?: CustomMap<MarkerView> | null
     crossRefs?: Array<CrossRefView>
+    audio?: AudioResourceView | null
+}
+
+export interface AudioResourceView {
+    id?: string,
+    format?: string
 }
 
 export interface CrossRefView {

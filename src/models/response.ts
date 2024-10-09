@@ -21,6 +21,7 @@ export interface TranslationOverviewResponse {
     lex_info_available?: boolean
     usfm_available?: boolean
     books?: Array<any>
+    audio_available?: boolean
 }
 
 export interface ChapterDetailedViewResponse {
@@ -31,6 +32,12 @@ export interface ChapterDetailedViewResponse {
     verses?: any
     usfm?: any
     cross_refs?: Array<any>
+    audio?: AudioResourceViewResponse | null
+}
+
+export interface AudioResourceViewResponse {
+    id?: string,
+    format?: string,
 }
 
 export interface ChapterOverviewResponse {

@@ -7,6 +7,7 @@ import Dropdown from "../Dropdown/Dropdown"
 import { ChapterDetailedViewRequest } from "../../models/request"
 import USFMView from "../USFMView/USFMView"
 import PlainView from "../PlainView/PlainView"
+import { ResourceURL } from "../../constants/ResourceURL"
 
 interface State {
     allChapters: Array<ChapterDetailedView>
@@ -84,6 +85,13 @@ const ChapterView = () => {
         }
     }
 
+    let audioSrc = state.currentChapter?.audio ? `${ResourceURL.AUDIO}/${state.currentChapter?.audio?.id}` : "";
+    let audioPlayer = (
+        <div className="chapter-view--audio">
+            <audio src={audioSrc} controls /> 
+        </div>
+    );
+
     let content: ReactElement = <></>
 
     if (state.currentChapter) {
@@ -106,6 +114,9 @@ const ChapterView = () => {
                     title="Select a chapter"
                     onSelect={ (i) => onChapterSelect(i+1) } />
             </div>
+            {
+                state.currentChapter?.audio ? audioPlayer : <div>No Audio</div>
+            }
             <div className="container-fluid chapter-view--vl">
                 { content }
             </div>

@@ -26,6 +26,7 @@ export const toTranslationOverview = (response: TranslationOverviewResponse) : T
         totalBooks : response.total_books,
         lexInfoAvailable : response.lex_info_available,
         usfmAvailable : response.usfm_available,
+        audioAvailable : response.audio_available,
         books : bookOverviews
     }
     return translationOverview;
@@ -48,7 +49,8 @@ export const toChapterDetailedView = (response: ChapterDetailedViewResponse) : C
         chapterNum : response.chapter_num,
         verses : toVerseDetailedViewMap(response.verses),
         usfm : toUSFMMap(response.usfm),
-        crossRefs : toCrossRefViews(response.cross_refs!!)
+        crossRefs : toCrossRefViews(response.cross_refs!!),
+        audio : response.audio
     };
 }
 
