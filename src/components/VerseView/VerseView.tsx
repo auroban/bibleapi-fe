@@ -1,12 +1,13 @@
 import { useParams } from "react-router-dom";
 import "./VerseView.css";
 import { BookOverview, ChapterDetailedView, TextSegmentView, VerseDetailedView, VerseSegment } from "../../models/dto";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import BibleApi from "../../helpers/BibleApi";
 import { ChapterDetailedViewRequest } from "../../models/request";
 import Dropdown from "../Dropdown/Dropdown";
 import { MarkerUtil } from "../../utils/MarkerUtils";
 import { TextSegmentAction } from "../../models/actions";
+import { ResourceURL } from "../../constants/ResourceURL";
 
 interface State {
     allChapters: Array<ChapterDetailedView>
@@ -21,6 +22,42 @@ const VerseView = () => {
     const { tCode } = useParams();
     const { bCode } = useParams();
 
+    const verseMapper = [ 
+        5.16,
+        4,
+        9.8,
+        4.6,
+        5.52,
+        8.36,
+        7.16,
+        7.2,
+        6.56,
+        8.68,
+        8.8,
+        11.4,
+        11.32,
+        4.48,
+        10.76,
+        6.64,
+        9.08,
+        4.04,
+        8.24,
+        3.88,
+        8.36,
+        13.2,
+        9.08,
+        4.04,
+        11.64,
+        12.56,
+        14.04,
+        8.6,
+        11.96,
+        11,
+        12.68
+    ]
+
+    const audioRef = useRef<HTMLAudioElement | null>(null); 
+
     const initState: State = {
         allChapters : [],
         currentChapter : null,
@@ -29,7 +66,26 @@ const VerseView = () => {
         currentVerse : null
     }
 
+    
+
     const [state, setState] = useState<State>(initState);
+
+    useEffect(() => {
+
+        console.info("Coming here");
+
+        if (audioRef.current && state.currentVerse && state.currentVerse.num) {
+            let currentTime = 0;
+            for (let i = 0; i < state.currentVerse.num; i++)  {
+                currentTime = currentTime + verseMapper[i];
+            }
+
+            console.info("Current Time: ", currentTime)
+            audioRef.current.currentTime = currentTime
+            audioRef.current.play();
+        }
+
+    }, [state.currentVerse])
 
     const getBookOverview = async () : Promise<BookOverview | null> => {
         const translationOverview = await BibleApi.getInstance().getTranslationOverview({ translationCode : tCode ?? "" });
@@ -39,6 +95,7 @@ const VerseView = () => {
         return null;
     }
 
+    
 
     useEffect(() => {
         fetchAndUpdate();

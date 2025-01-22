@@ -56,7 +56,7 @@ const DetailedView = (props: Props) => {
     return (
         <div className="container-fluid detailed-view">
             <div className="detailed-view__header">
-                <h1>{ `${props.selectedTranslation.name} (${props.selectedTranslation.code})` ?? "NO BOOK NAME FOUND" }</h1>
+                <h1>{ `${props.selectedTranslation.name} (${props.selectedTranslation.code})` }</h1>
                 <h3>Total Books: {props.selectedTranslation.totalBooks}</h3>
             </div>
             <div className="container-fluid detailed-view__books">

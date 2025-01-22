@@ -1,4 +1,4 @@
-import { TextSegmentAction } from "./actions"
+import { FootnoteAction, TextSegmentAction } from "./actions"
 
 export interface CustomMap<T> {
     [key: string] : T
@@ -30,6 +30,7 @@ export interface ChapterOverview {
     bookCode?: string
     chapterNum?: number
     totalVerses?: number
+    audioAvailable?: boolean
 }
 
 export interface ChapterDetailedView {
@@ -40,12 +41,11 @@ export interface ChapterDetailedView {
     verses?: CustomMap<VerseDetailedView> | null
     usfm?: CustomMap<MarkerView> | null
     crossRefs?: Array<CrossRefView>
-    audio?: AudioResourceView | null
+    audioTimestamps?: AudioTimestampsView | null
 }
 
-export interface AudioResourceView {
-    id?: string,
-    format?: string
+export interface AudioTimestampsView {
+    timestamps?: Array<number>
 }
 
 export interface CrossRefView {
@@ -66,6 +66,7 @@ export interface VerseDetailedView {
     text?: string
     footnotes?: Array<FootnoteView>
     textSegments?: Array<TextSegmentView>
+    specialTextSegments?: CustomMap<SpecialTextSegment> | null
 }
 
 export interface FootnoteView {
@@ -90,9 +91,24 @@ export interface TextSegmentView {
     lexicographyInfo?: CustomMap<string>
 }
 
+/**
+ * @template {VerseSegment}
+ * Interface to represent portion of a verse displayed in a USFM marker
+ * This also contains Text Segments, Special Text Segments and Footnotes
+ * for that particular portion of the verse.
+ */
+
 export interface VerseSegment {
     verseNum: string | null
     text: string
     textSegmentActions: Array<TextSegmentAction>
-    footnotes?: Array<FootnoteView>
+    footnoteActions?: Array<FootnoteAction>
+    specialTextSegments?: CustomMap<SpecialTextSegment> | null
+}
+
+export interface SpecialTextSegment {
+    parent?: string | null
+    startIndex?: number,
+    endIndex?: number,
+    type?: string
 }

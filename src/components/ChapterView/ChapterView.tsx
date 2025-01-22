@@ -1,18 +1,21 @@
 import { ReactElement, useEffect, useState } from "react"
-import { BookOverview, ChapterDetailedView } from "../../models/dto"
+import { BookOverview, ChapterDetailedView, ChapterOverview } from "../../models/dto"
 import "./ChapterView.css"
 import BibleApi from "../../helpers/BibleApi"
 import { useParams } from "react-router-dom"
 import Dropdown from "../Dropdown/Dropdown"
-import { ChapterDetailedViewRequest } from "../../models/request"
+import { ChapterDetailedViewRequest, ChapterOverviewRequest } from "../../models/request"
 import USFMView from "../USFMView/USFMView"
 import PlainView from "../PlainView/PlainView"
 import { ResourceURL } from "../../constants/ResourceURL"
+import AudioPlayer from "../AudioPlayer/AudioPlayer"
 
 interface State {
     allChapters: Array<ChapterDetailedView>
     currentChapter?: ChapterDetailedView | null
+    currentChapterOverview?: ChapterOverview | null,
     bookOverview: BookOverview | null
+    chapterOverviews: Array<ChapterOverview>
 }
 
 const ChapterView = () => {
@@ -22,7 +25,8 @@ const ChapterView = () => {
 
     const initState: State = {
         allChapters : [],
-        bookOverview : null
+        bookOverview : null,
+        chapterOverviews : []
     }
 
     const [state, setState] = useState<State>(initState)
@@ -36,19 +40,30 @@ const ChapterView = () => {
 
         const bookOverview = await getBookOverview();
         const allChapters: Array<ChapterDetailedView> = [];
+        const allChapterOverviews: Array<ChapterOverview> = [];
         const totalChapters = bookOverview?.totalChapters ?? 0;
         for(let i = 1; i <= totalChapters; i++) {
-            const request: ChapterDetailedViewRequest = {
+            const chapterDetailedReq: ChapterDetailedViewRequest = {
                 translationCode : tCode ?? "",
                 bookCode : bCode ?? "",
                 chapterNum : i
             }
-            const chapterDetailedView = await BibleApi.getInstance().getChapterDetailedView(request);
+
+            const chapterOverviewReq: ChapterOverviewRequest = {
+                translationCode : tCode ?? "",
+                bookCode : bCode ?? "",
+                chapterNum : i
+            }
+            
+            const chapterDetailedView = await BibleApi.getInstance().getChapterDetailedView(chapterDetailedReq);
+            const chapterOverview = await BibleApi.getInstance().getChapterOverview(chapterOverviewReq);
             allChapters.push(chapterDetailedView);
+            allChapterOverviews.push(chapterOverview);
         }
         setState(prevState => ({
             ...prevState,
             allChapters : allChapters,
+            chapterOverviews : allChapterOverviews,
             bookOverview : bookOverview
         }));
     }
@@ -71,26 +86,28 @@ const ChapterView = () => {
 
     const onChapterSelect = async (index: number) => {
         let chapter: ChapterDetailedView | null = null;
+        let chapterOverview: ChapterOverview | null = null;
         for (let i = 0; i < state.allChapters.length; i++) {
             if (state.allChapters[i].chapterNum === index) {
                 chapter = state.allChapters[i];
+                chapterOverview = state.chapterOverviews[i];
                 break;
             }
         }
         if (chapter) {
             setState(prevState => ({
                 ...prevState,
-                currentChapter : chapter
+                currentChapter : chapter,
+                currentChapterOverview : chapterOverview,
             }));
         }
     }
 
-    let audioSrc = state.currentChapter?.audio ? `${ResourceURL.AUDIO}/${state.currentChapter?.audio?.id}` : "";
-    let audioPlayer = (
-        <div className="chapter-view--audio">
-            <audio src={audioSrc} controls /> 
-        </div>
-    );
+    const showAudioPlayer = () : ReactElement => {
+        const url = `${ResourceURL.AUDIO}?tCode=${tCode}&bCode=${bCode}&cNum=${state.currentChapter?.chapterNum}`;
+        const skipFirst = tCode == "BSB";
+        return <AudioPlayer skipFirst={ skipFirst } url={ url } timestamps={ state.currentChapter?.audioTimestamps?.timestamps } />;
+    };
 
     let content: ReactElement = <></>
 
@@ -115,7 +132,8 @@ const ChapterView = () => {
                     onSelect={ (i) => onChapterSelect(i+1) } />
             </div>
             {
-                state.currentChapter?.audio ? audioPlayer : <div>No Audio</div>
+                state.currentChapterOverview && state.currentChapterOverview.audioAvailable ? 
+                    showAudioPlayer() : <></>
             }
             <div className="container-fluid chapter-view--vl">
                 { content }

@@ -1,5 +1,5 @@
-import { BookOverview, ChapterDetailedView, ChapterOverview, CrossRefView, CustomMap, FootnoteVerseReferenceView, FootnoteView, MarkerView, TextSegmentView, TranslationOverview, VerseDetailedView } from "../models/dto";
-import { ChapterDetailedViewResponse, ChapterOverviewResponse, TranslationOverviewResponse, VerseDetailedViewResponse } from "../models/response";
+import { AudioTimestampsView, BookOverview, ChapterDetailedView, ChapterOverview, CrossRefView, CustomMap, FootnoteVerseReferenceView, FootnoteView, MarkerView, SpecialTextSegment, TextSegmentView, TranslationOverview, VerseDetailedView } from "../models/dto";
+import { AudioTimestampsResponse, ChapterDetailedViewResponse, ChapterOverviewResponse, TranslationOverviewResponse, VerseDetailedViewResponse } from "../models/response";
 
 export const toTranslationOverview = (response: TranslationOverviewResponse) : TranslationOverview => {
     const books = response.books ?? [];
@@ -37,7 +37,8 @@ export const toChapterOverview = (response: ChapterOverviewResponse) : ChapterOv
         translationCode : response.translation_code,
         bookCode : response.book_code,
         chapterNum : response.chapter_num,
-        totalVerses : response.total_verses
+        totalVerses : response.total_verses,
+        audioAvailable : response.audio_available
     }
 }
 
@@ -50,7 +51,7 @@ export const toChapterDetailedView = (response: ChapterDetailedViewResponse) : C
         verses : toVerseDetailedViewMap(response.verses),
         usfm : toUSFMMap(response.usfm),
         crossRefs : toCrossRefViews(response.cross_refs!!),
-        audio : response.audio
+        audioTimestamps : toAudioTimestampsView(response.audio_timestamps)
     };
 }
 
@@ -76,6 +77,17 @@ const toUSFMMap = (response: any) : CustomMap<MarkerView> => {
         const usfmObject = response[key];
         const markerView = toMarkerView(usfmObject);
         map[usfmId] = markerView
+    });
+    return map;
+}
+
+const toSpecialTextSegmentMap = (response: any) : CustomMap<SpecialTextSegment> => {
+    const map: CustomMap<SpecialTextSegment> = {};
+    Object.keys(response).forEach((key) => {
+        const spTextId = key as string;
+        const spTextObject = response[key] as any;
+        const specialTextSegment = toSpecialTextSegment(spTextObject);
+        map[spTextId] = specialTextSegment;
     });
     return map;
 }
@@ -109,8 +121,10 @@ const toVerseDetailedViewInner = (verseObject: any) : VerseDetailedView => {
     const text = verseObject["text"] as string;
     const footnotesArr = verseObject["footnotes"] as Array<any>;
     const textSegmentArr = verseObject["text_segments"] as Array<any>;
+    const specialTextSegmentAny = verseObject["special_text_segments"] as any;
     const footnoteViews: Array<FootnoteView> = [];
     const textSegmentViews: Array<TextSegmentView> = [];
+    const specialTextSegments: CustomMap<SpecialTextSegment> = toSpecialTextSegmentMap(specialTextSegmentAny);
     footnotesArr.forEach((item) => {
         const footnoteView = toFootnoteView(item);
         footnoteViews.push(footnoteView);
@@ -125,7 +139,8 @@ const toVerseDetailedViewInner = (verseObject: any) : VerseDetailedView => {
         num : num,
         text : text,
         footnotes : footnoteViews,
-        textSegments : textSegmentViews
+        textSegments : textSegmentViews,
+        specialTextSegments : specialTextSegments
     };
 }
 
@@ -190,4 +205,29 @@ const toTextSegmentView = (response: any) : TextSegmentView => {
         endIndex : endIndex,
         lexicographyInfo : lexMap
     };
+}
+
+const toSpecialTextSegment = (response: any) : SpecialTextSegment => {
+    let parent: string | null
+    if (response["parent"]) {
+        parent = response["parent"] as string
+    } else {
+        parent = null
+    }
+    const startIndex = response["s_index"] as number;
+    const endIndex = response["e_index"] as number;
+    const type = response["type"] as string;
+
+    return {
+        parent : parent,
+        startIndex : startIndex,
+        endIndex : endIndex,
+        type : type
+    }
+}
+
+const toAudioTimestampsView = (response: AudioTimestampsResponse | undefined | null) : AudioTimestampsView => {
+    return {
+        timestamps : response?.timestamps
+    }
 }

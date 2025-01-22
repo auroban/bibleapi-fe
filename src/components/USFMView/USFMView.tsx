@@ -4,7 +4,7 @@ import "./USFMView.css";
 import { Marker } from "../../constants/Marker";
 import Paragraph from "../MarkerViews/Paragraph/Paragraph";
 import Heading from "../MarkerViews/Heading/Heading";
-import { CrossRefAction, TextSegmentAction } from "../../models/actions";
+import { CrossRefAction, FootnoteAction, TextSegmentAction } from "../../models/actions";
 import CrossRef from "../MarkerViews/CrossReference/CrossRef";
 import DescriptiveTitle from "../MarkerViews/DescriptiveTitle/DescriptiveTitle";
 import { TextUtils } from "../../utils/TextUtils";
@@ -102,10 +102,32 @@ const USFMView = (props: Props) => {
             return action;
         });
 
+        const specialTextSegments = MarkerUtil.getSpecialTextsRelativeToVerseChunk(
+            verseNum,
+            props.chapter.verses!!,
+            Number.parseInt(verseStartIndex),
+            Number.parseInt(verseEndIndex));
+
+        const footnotes = MarkerUtil.getFootnotesRelativeToVerseChunk(
+            verseNum, 
+            props.chapter.verses!!,
+            Number.parseInt(verseStartIndex),
+            Number.parseInt(verseEndIndex));
+
+        const footnoteActions = footnotes.map((it) => {
+            const action: FootnoteAction = {
+                footnote : it,
+                onClick : () => { alert(`Footnote Clicked: ${JSON.stringify(it)}`) }
+            }
+            return action;
+        });
+
         let vs: VerseSegment = {
             verseNum : includeVerseNum ? verseNum : null,
             text : textChunk,
-            textSegmentActions : textSegmentActions
+            textSegmentActions : textSegmentActions,
+            specialTextSegments : specialTextSegments,
+            footnoteActions : footnoteActions,
         }
         return vs;
     }

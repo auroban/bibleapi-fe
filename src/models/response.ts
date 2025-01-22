@@ -32,12 +32,11 @@ export interface ChapterDetailedViewResponse {
     verses?: any
     usfm?: any
     cross_refs?: Array<any>
-    audio?: AudioResourceViewResponse | null
+    audio_timestamps?: AudioTimestampsResponse | null
 }
 
-export interface AudioResourceViewResponse {
-    id?: string,
-    format?: string,
+export interface AudioTimestampsResponse {
+    timestamps?: Array<number>
 }
 
 export interface ChapterOverviewResponse {
@@ -45,6 +44,7 @@ export interface ChapterOverviewResponse {
     book_code?: string
     chapter_num?: number
     total_verses?: number
+    audio_available?: boolean
 }
 
 export interface VerseDetailedViewResponse {
@@ -52,4 +52,5 @@ export interface VerseDetailedViewResponse {
     text?: string
     footnotes?: Array<any>
     text_segments?: Array<any>
+    special_text_segments?: any
 }

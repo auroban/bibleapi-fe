@@ -9,3 +9,25 @@
         background-color: #abff32;
     }
 }
+
+/*
+    Special Text Type - Translator Addition
+*/
+.spt--ta {
+    font-style: italic;
+}
+
+/*
+    Special Text Type - Transliterated
+*/
+.spt--t {
+    font-style: italic;
+}
+
+/*
+    Special Text Type - Word of Jesus
+*/
+.spt--wj {
+    color: red;
+}
+
